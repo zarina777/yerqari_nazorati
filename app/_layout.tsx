@@ -6,21 +6,22 @@ import { Text } from "react-native";
 import { MD3LightTheme, Provider as PaperProvider } from "react-native-paper";
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
+  // TODO: wire these to your real auth state
   const isAuth = false;
   const isLoading = false;
 
   const router = useRouter();
-  const segments = useSegments();
-
+  const segments = useSegments(); // e.g., ["auth"] or ["index"]
+  useEffect(() => {}, []);
   useEffect(() => {
     if (isLoading) return;
 
-    const onAuthScreen = segments[0] === "auth";
+    const onAuth = segments[0] === "auth";
 
-    if (!isAuth && !onAuthScreen) {
-      router.replace("/auth");
-    } else if (isAuth && onAuthScreen) {
-      router.replace("/");
+    if (!isAuth && !onAuth) {
+      router.replace("/auth"); // requires app/auth/index.tsx or app/auth.tsx
+    } else if (isAuth && onAuth) {
+      router.replace("/"); // requires app/index.tsx (or your main route)
     }
   }, [isAuth, isLoading, segments, router]);
 
@@ -47,6 +48,7 @@ export default function RootLayout() {
     <PaperProvider theme={customTheme}>
       <RouteGuard>
         <Stack>
+          {/* Must match a real file: app/auth/index.tsx or app/auth.tsx */}
           <Stack.Screen
             name="auth"
             options={{
@@ -59,7 +61,7 @@ export default function RootLayout() {
               headerRight: () => <LanguageSwitcher />,
             }}
           />
-
+          {/* Must match app/index.tsx (home) */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </RouteGuard>
